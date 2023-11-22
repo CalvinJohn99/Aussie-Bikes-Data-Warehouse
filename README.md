@@ -72,18 +72,29 @@ Profit_Tax_Freight, Profit_StandardCost, and Profit_Tax_Freigth_StandardCost rep
 Note: To navigate the appropriate equation for calculating profit we need to conduct an initial assessment as recommended by Kimball to understand the data realities, business context, and end-user requirements. I will proceed with Profit_Tax_Freigth_StandardCost as profit for the purposes of this project and answer analytical queries.
 
 ### Implementaion of the Dimensional Model (ETL with Microsoft SSIS)
-1. **Dimensional Tables Implementation** ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/f37baf02-617e-425e-bcce-1514e2afa548)          ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/ea28025a-35c4-4260-ae39-50f3a4381fe9)
+1. **Dimensional Tables Implementation** ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/f37baf02-617e-425e-bcce-1514e2afa548)
+        ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/ea28025a-35c4-4260-ae39-50f3a4381fe9)
+
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/199d9efb-1eb1-47dc-b2ee-14e013cc4d0e)
+
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/baba8b29-0a2d-46ce-bd21-69203e7b87a5)
+
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/54ecf63a-95a6-4255-a3c6-b6133ba3ed6d)
-2. **Fact Table Implementation** ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/138d0641-2e25-41e0-b916-bee2b024af9d)
-3. **The Implementation Process**
+
+3. **Fact Table Implementation**
+
+ ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/138d0641-2e25-41e0-b916-bee2b024af9d)
+ 
+5. **The Implementation Process**
+
 Relevant components of the data warehouse architecture:
 
-Source Data Systems:
+**Source Data Systems:**
+
 Before we can integrate data into a dimensional model, we need to first identify the source data systems. Our main data source is the internal sales system modelled as a transactional database. We also have an internally sourced flat file that contains the names of the Aussie Bikes salespeople.
 
-Data Staging Area:
+**Data Staging Area:**
+
 After identifying the data sources, we then conduct Extract, Transform, Load (ETL) with SSIS. ETL facilitates creation of the dimensionally modelled data through data integration, transformation, cleaning and is vital in ensuring the quality of data and smooth functioning of the data warehouse.
 
 We extract the data in the sales system from SQL Server Management Studio using an ADO Net Source in SSIS. To extract the flat file, which is stored as a .xlsx file, the file had to be converted to a CSV file before it could be read as a flat file source in SSIS.
@@ -101,7 +112,8 @@ Profit_Tax_Freigth_StandardCost (as defined earlier) can be calculated via an ad
 
 Once the data is transformed, we can load the processed data into the data warehouse.
 
-Data and Meta-Data Storage Area:
+**Data and Meta-Data Storage Area:**
+
 The final raw data is loaded onto the data warehouse, ‘OZZB_SalesDataWarehouse’, a database in SQL Server Management Studio via SSIS ADO Net Destination. 
 
 
