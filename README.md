@@ -21,9 +21,7 @@ Amy has specifically requested, a) Data Model for the Data Warehouse, b) Descrip
 ### Sales System ER Model
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/99ca70ca-7e34-468e-8436-199407d8018d)
 
-## REPORT
-
-### Executive Summary
+## Executive Summary
 Data is an asset that can allow us to get insights on business activities, consumer preferences, and make critical decisions. The transactional databases currently in place are normalised and contains many tables. They are designed for efficient data writing and simple data retrieval but are not ideal for answering analytical questions as it requires accessing and joining data from multiple tables before aggregating the data. 
 
 To optimise and organise data for answering analytical queries, performing numerical aggregations, and understand various dimensions, a data warehouse prototype has been created. The data warehouse is designed with a denormalised data model (the dimensional model) and contains a separate informational database to optimize data reading and aggregating capabilities, support complex querying, and meet analytical information needs.
@@ -37,7 +35,7 @@ This dimensional model has helped us garner the following insights:
 * In 2014, the top 10 profitable products are all bikes. 60% of them are mountain bikes, 30% are touring bikes, and 10% are road bikes.
 * In December 2013, our most profitable sales territory was Australia.
 
-### The Dimensional Model
+## The Dimensional Model
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/8e0c3464-02ea-41df-b758-3fc4fc8b6436)
 
 I used Ralph Kimball’s four step process in developing the dimensional model:
@@ -71,9 +69,12 @@ Profit_Tax_Freight, Profit_StandardCost, and Profit_Tax_Freigth_StandardCost rep
 
 Note: To navigate the appropriate equation for calculating profit we need to conduct an initial assessment as recommended by Kimball to understand the data realities, business context, and end-user requirements. I will proceed with Profit_Tax_Freigth_StandardCost as profit for the purposes of this project and answer analytical queries.
 
-### Implementaion of the Dimensional Model (ETL with Microsoft SSIS)
-1. **Dimensional Tables Implementation** ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/f37baf02-617e-425e-bcce-1514e2afa548)
-        ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/ea28025a-35c4-4260-ae39-50f3a4381fe9)
+## Implementaion of the Dimensional Model (ETL with Microsoft SSIS)
+### Dimensional Tables Implementation 
+
+![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/f37baf02-617e-425e-bcce-1514e2afa548)
+
+![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/ea28025a-35c4-4260-ae39-50f3a4381fe9)
 
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/199d9efb-1eb1-47dc-b2ee-14e013cc4d0e)
 
@@ -81,11 +82,11 @@ Note: To navigate the appropriate equation for calculating profit we need to con
 
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/54ecf63a-95a6-4255-a3c6-b6133ba3ed6d)
 
-3. **Fact Table Implementation**
+### Fact Table Implementation
 
  ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/138d0641-2e25-41e0-b916-bee2b024af9d)
  
-5. **The Implementation Process**
+### The Implementation Process
 
 Relevant components of the data warehouse architecture:
 
@@ -123,18 +124,24 @@ Richard Carey is our top customer in Australia based on net profit contributions
 
 **SQL:**
 
-WITH cte1 AS (SELECT C1.CustomerKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS CustomerProfitAustralia
-	FROM SalesOrderFact F
-	JOIN CustomerDim C1
-	ON F.CustomerKey=C1.CustomerKey
-	WHERE C1.CountryRegionName='Australia'
-	GROUP BY C1.CustomerKey
+WITH cte1 AS (SELECT C1.CustomerKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1)
+AS FLOAT) AS CustomerProfitAustralia
+
+FROM SalesOrderFact F
+
+JOIN CustomerDim C1
+
+ON F.CustomerKey=C1.CustomerKey
+
+WHERE C1.CountryRegionName='Australia'
+GROUP BY C1.CustomerKey
 )
-SELECT TOP 10 cte1.CustomerKey, C2.CustomerID, cte1.CustomerProfitAustralia, C2.FirstName + ' ' + C2.LastName AS FullName, C2.City, C2.StateProvinceName AS State
-FROM cte1 
-JOIN CustomerDim C2
-ON cte1.CustomerKey=C2.CustomerKey
-ORDER BY cte1.CustomerProfitAustralia DESC;
+SELECT TOP 10 cte1.CustomerKey, C2.CustomerID, cte1.CustomerProfitAustralia, C2.FirstName
++ ' ' + C2.LastName AS FullName, C2.City, C2.StateProvinceName AS State
++ FROM cte1
++ JOIN CustomerDim C2
++ ON cte1.CustomerKey=C2.CustomerKey
++ ORDER BY cte1.CustomerProfitAustralia DESC;
 
 ### Most Profitable Products 2014
 
