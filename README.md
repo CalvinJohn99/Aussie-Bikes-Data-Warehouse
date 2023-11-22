@@ -116,7 +116,7 @@ Once the data is transformed, we can load the processed data into the data wareh
 
 The final raw data is loaded onto the data warehouse, ‘OZZB_SalesDataWarehouse’, a database in SQL Server Management Studio via SSIS ADO Net Destination. 
 
-### Key Customers in Australia
+## Key Customers in Australia
 
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/3129af17-8672-4036-a3ba-54e8f5d6d550)
 
@@ -150,7 +150,7 @@ ON cte1.CustomerKey=C2.CustomerKey
 
 ORDER BY cte1.CustomerProfitAustralia DESC;
 
-### Most Profitable Products 2014
+## Most Profitable Products 2014
 
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/cb659cdb-21ac-4575-ac1d-e44f91a39ae8)
 
@@ -193,7 +193,7 @@ ON cte1.ProductKey=P.ProductKey
 
 ORDER BY cte1.ProductProfit2014 DESC;
 
-### Most Profitable Sales Territories in December 2013
+## Most Profitable Sales Territories in December 2013
 
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/30885754-7c83-4d52-ab0d-66f0ca5ab3c7)
 
@@ -233,7 +233,7 @@ ON cte1.TerritoryKey=T2.TerritoryKey
 
 ORDER BY cte1.TerritoryProfitDec2013 DESC;
 
-
+<br> <br> <br>
 
 By denormalizing the data, the dimensional model has made it simple to answer analytical queries (as observed from the simpler SQL queries), perform numerical aggregations, and understand various dimensions.
 
