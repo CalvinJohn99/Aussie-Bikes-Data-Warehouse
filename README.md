@@ -43,27 +43,30 @@ This dimensional model has helped us garner the following insights:
 I used Ralph Kimball’s four step process in developing the dimensional model:
 
 <ins>Step 1: Select the business process.</ins>
+
 We will be focussing on the Sales Process (OrderQty, LineTotal, Profit, etc.) as our objective is to analyse profitability across dimensions such as customers and products.
 
 <ins>Step 2: Define the Data Grain.</ins>
+
 Each data grain represents an individual customer, unique product (including its quantity per order), sales territory, salesperson involved in the transaction, and the day of transaction (day is at the atomic grain level despite OrderDate using datetime data type; time isn’t recorded as per data realities of the system). Data is at the lowest possible details for provision of analytical flexibility.
 
 <ins>Step 3: Identify Dimensions. </ins>
+
 Here the dimensions are customer, product, territory, salesperson, and date. Surrogate keys were generated for each dimension to connect the dimensions and facts while preserving the natural key. This allows us to save storage space and prevent potential disruptions when records of the operational sources change over time. A Date dimension has also been included as they are fundamental for tracking changes across time periods.
 
 Hierarchies were collapsed across the dimensions. Information from the Product, ProductSubCategory, ProductCategory, ProductModel tables in the operational database were collapsed into the product dimension. The Customers, Address, StateProvince, and CountryRegion tables were collapsed into the customer dimension. The SalesPerson SalesPersonDetails, SalesTerritory, StateProvince, and CountryRegion tables were collapsed into the salesperson dimension. Adding additional attributes helps to manage the complexity while logically maintaining the hierarchical structure of the data in the same dimensional table. For example, ProductSubCategoryName and ProductCategoryName were additional attributes added to the product dimension to provide additional flexibility in the analysis.
 
 <ins>Step 4: Identify the Fact Measure.</ins>
-The fact table uses a composite key consisting of the keys of all the dimension tables (CustomerKey, ProductKey, TerritoryKey, SalesPersonKey, OrderDateKey). 
 
+The fact table uses a composite key consisting of the keys of all the dimension tables (CustomerKey, ProductKey, TerritoryKey, SalesPersonKey, OrderDateKey). 
 The facts correspond to the measurements of sales events at a point in space and time. Here we include the facts LineTotal, LineTax, LineFreight, OrderQty, UnitPrice, UnitPriceDiscount, StandardCost, ListPrice, Profit_Tax_Freight, Profit_StandardCost, Profit_Tax_Freigth_StandardCost. 
 
 These are numerical and additive in nature and supports mathematical operations such as aggregation for analysis. The LineTax and LineFreight facts are the tax amounts and freight costs of the transaction distributed evenly across the line items. 
 
 Profit_Tax_Freight, Profit_StandardCost, and Profit_Tax_Freigth_StandardCost represent profits calculated in different ways. 
-•	Profit_Tax_Freight = LineTotal – LineTax – LineFreight 
-•	Profit_StandardCost = LineTotal – (StandardCost * OrderQty)
-•	Profit_Tax_Freigth_StandardCost = LineTotal – LineTax – LineFreight – (StandardCost * OrderQty)
+* Profit_Tax_Freight = LineTotal – LineTax – LineFreight
+* Profit_StandardCost = LineTotal – (StandardCost * OrderQty)
+* Profit_Tax_Freigth_StandardCost = LineTotal – LineTax – LineFreight – (StandardCost*OrderQty)
 
 
 Note: To navigate the appropriate equation for calculating profit we need to conduct an initial assessment as recommended by Kimball to understand the data realities, business context, and end-user requirements. I will proceed with Profit_Tax_Freigth_StandardCost as profit for the purposes of this project and answer analytical queries.
