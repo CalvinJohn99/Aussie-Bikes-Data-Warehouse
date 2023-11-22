@@ -115,4 +115,73 @@ Once the data is transformed, we can load the processed data into the data wareh
 
 The final raw data is loaded onto the data warehouse, ‘OZZB_SalesDataWarehouse’, a database in SQL Server Management Studio via SSIS ADO Net Destination. 
 
+### Key Customers in Australia
+
+![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/3129af17-8672-4036-a3ba-54e8f5d6d550)
+
+Richard Carey is our top customer in Australia based on net profit contributions, contributing ~14247$ in profits. His profit contribution is ~4.6 times that of our 2nd top customer in Australia, Meagan Madan. Furthermore, 80% of our key customers from Australia seem to be from either New South Wales or Victoria.
+
+**SQL:**
+
+WITH cte1 AS (SELECT C1.CustomerKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS CustomerProfitAustralia
+	FROM SalesOrderFact F
+	JOIN CustomerDim C1
+	ON F.CustomerKey=C1.CustomerKey
+	WHERE C1.CountryRegionName='Australia'
+	GROUP BY C1.CustomerKey
+)
+SELECT TOP 10 cte1.CustomerKey, C2.CustomerID, cte1.CustomerProfitAustralia, C2.FirstName + ' ' + C2.LastName AS FullName, C2.City, C2.StateProvinceName AS State
+FROM cte1 
+JOIN CustomerDim C2
+ON cte1.CustomerKey=C2.CustomerKey
+ORDER BY cte1.CustomerProfitAustralia DESC;
+
+### Most Profitable Products 2014
+
+![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/cb659cdb-21ac-4575-ac1d-e44f91a39ae8)
+
+In 2014, our top 10 profitable products are all bikes! Among the top 10 bike products, 60% are mountain bikes, 30% are touring bikes, and 10% are road bikes. Also, the most profitable mountain bike makes ~3.4 that of the most profitable touring bike. Most of these top bikes are either black or silver in colour.
+
+**SQL:**
+
+WITH cte1 AS (SELECT P.ProductKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS ProductProfit2014
+	FROM SalesOrderFact F
+	JOIN ProductDim P
+	ON F.ProductKey=P.ProductKey
+	JOIN DateDim D
+	ON F.OrderDateKey=D.DateKey
+	WHERE D.Year=2014
+	GROUP BY P.ProductKey
+)
+SELECT TOP 10 cte1.ProductKey, cte1.ProductProfit2014, P.ProductName, P.ProductCategoryName AS Category, P.ProductSubCategoryName AS SubCategory, P.ProductModelName AS Model
+FROM cte1 
+JOIN ProductDim P
+ON cte1.ProductKey=P.ProductKey
+ORDER BY cte1.ProductProfit2014 DESC;
+
+### Most Profitable Sales Territories in December 2013
+
+![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/30885754-7c83-4d52-ab0d-66f0ca5ab3c7)
+
+In December 2013, our most profitable sales territory is Australia in the pacific group with ~148812.5$ in profits for the month. Although Australia is the most profitable sales territory, our 2nd and 3rd most profitable territories, Northwest and Southwest respectively, contributed to more unit sales and dollar sales for the month. This could perhaps be because of lower costs incurred within Australia.
+
+**SQL:**
+
+WITH cte1 AS (SELECT T1.TerritoryKey, CAST(ROUND(SUM(Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS TerritoryProfitDec2013, SUM(F.OrderQty) AS UnitSales, CAST(ROUND(SUM(F.LineTotal),1) AS FLOAT) AS DollarSales
+	FROM SalesOrderFact F
+	JOIN SalesTerritoryDim T1
+	ON F.TerritoryKey=T1.TerritoryKey
+	JOIN DateDim D
+	ON F.OrderDateKey=D.DateKey
+	WHERE D.Year=2013 AND D.Month=12
+	GROUP BY T1.TerritoryKey
+)
+SELECT TOP 5 cte1.*, T2.TerritoryName, T2.TerritoryGroup
+FROM cte1
+JOIN SalesTerritoryDim T2
+ON cte1.TerritoryKey=T2.TerritoryKey
+ORDER BY cte1.TerritoryProfitDec2013 DESC;
+
+By denormalizing the data, the dimensional model has made it simple to answer analytical queries (as observed from the simpler SQL queries), perform numerical aggregations, and understand various dimensions.
+
 
