@@ -101,14 +101,13 @@ We extract the data in the sales system from SQL Server Management Studio using 
 
 In the transformation phase, we fix the data quality issues and prepare the data to load into the dimensional model. 
 
-•	In the flat file, the SalesPersonID attribute is converted into a 4 byte signed integer from a general string data type to match the data type of SalesPersonID in the SalesPerson table. The data types need to match to perform an SSIS merge join task. 
-•	For the dimension and fact tables, we merge data from various tables in the sales system using a merge join task.
-•	Artificially generated surrogate keys are added through SQL table creation queries in the ADO Net Destination before loading data into the dimensional tables in the data warehouse.
-•	In the DateDim table, we store additional information regarding Day, Month, and Year, based on the DateID attribute from the Dates table in the operational database via a derived column task.
-•	To calculate tax and freight amounts for each line item, we get the aggregate sum of the OrderQty attribute per order (since LineTax=TaxAmt*(OrderQty/Sum(OrderQty))) via an aggregate task. With the calculated sum of OrderQty per order, we can derive the LineTax and LineFreight attributes via a derived column task. Once we have LineTax and LineFreight attributes, Profit_Tax_Freight, Profit_StandardCost, and 
-Profit_Tax_Freigth_StandardCost (as defined earlier) can be calculated via an additional derived column task. 
-•	We convert OrderDate, DueDate, and ShipDate from datetime data type to date data type via type casting and the derived column SSIS task. We do this for looking up matching date keys in the DateDim dimensional table, since DateID in DateDim has date data type.
-•	For the fact table, we can obtain the surrogate keys from the constructed dimensional tables via a lookup task by matching the natural key in the fact table with the corresponding key in the dimensional table.
+* In the flat file, the SalesPersonID attribute is converted into a 4 byte signed integer from a general string data type to match the data type of SalesPersonID in the SalesPerson table. The data types need to match to perform an SSIS merge join task.
+* For the dimension and fact tables, we merge data from various tables in the sales system using a merge join task.
+* Artificially generated surrogate keys are added through SQL table creation queries in the ADO Net Destination before loading data into the dimensional tables in the data warehouse.
+* In the DateDim table, we store additional information regarding Day, Month, and Year, based on the DateID attribute from the Dates table in the operational database via a derived column task.
+* To calculate tax and freight amounts for each line item, we get the aggregate sum of the OrderQty attribute per order (since LineTax=TaxAmt*(OrderQty/Sum(OrderQty))) via an aggregate task. With the calculated sum of OrderQty per order, we can derive the LineTax and LineFreight attributes via a derived column task. Once we have LineTax and LineFreight attributes, Profit_Tax_Freight, Profit_StandardCost, and Profit_Tax_Freigth_StandardCost (as defined earlier) can be calculated via an additional derived column task.
+* We convert OrderDate, DueDate, and ShipDate from datetime data type to date data type via type casting and the derived column SSIS task. We do this for looking up matching date keys in the DateDim dimensional table, since DateID in DateDim has date data type.
+* For the fact table, we can obtain the surrogate keys from the constructed dimensional tables via a lookup task by matching the natural key in the fact table with the corresponding key in the dimensional table.
 
 Once the data is transformed, we can load the processed data into the data warehouse.
 
