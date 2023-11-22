@@ -1,4 +1,4 @@
-# Aussie-Bikes-Data-Warehouse
+# Aussie Bikes Data Warehouse
 The project outlines the implementation of a robust data warehouse using Microsoft SSIS based on a case scenario involving Aussie Bikes, its sales system and ER Model. The data was consolidated from multiple operational tables in the sales system to optimize for data driven decision-making. 
 
 I have attached the data sources, the backup file of the created data warehouse, images of the sales system ER model and the corresponding dimensional model, SQL Queries, stored procedures, screenshots of query outputs, and screenshots of the ETL Transformation steps in SSIS.
@@ -25,9 +25,11 @@ Amy has specifically requested, a) Data Model for the Data Warehouse, b) Descrip
 
 ### Executive Summary
 Data is an asset that can allow us to get insights on business activities, consumer preferences, and make critical decisions. The transactional databases currently in place are normalised and contains many tables. They are designed for efficient data writing and simple data retrieval but are not ideal for answering analytical questions as it requires accessing and joining data from multiple tables before aggregating the data. 
+
 To optimise and organise data for answering analytical queries, performing numerical aggregations, and understand various dimensions, a data warehouse prototype has been created. The data warehouse is designed with a denormalised data model (the dimensional model) and contains a separate informational database to optimize data reading and aggregating capabilities, support complex querying, and meet analytical information needs.
 
 The dimensional model is based on the multi-dimensional model of data and is designed for retrieval-only databases. It is simple, intuitive, and allows us to focus on process measurement events such as profit and associated dimensions that provide descriptive context, i.e., fact tables and dimension tables. The dimensional model is designed before implementing the data warehouse.
+
 The data from the operational systems is then combined and transformed (ETL) into a multi-dimensional model to extract valuable data (integrated, non-volatile, subject oriented, and time-variant data) which we then deposit in the data warehouse (informational database as per the dimensional model). The data warehouse in turn allows us to access a unified version of truth that can support decision-making.
 
 This dimensional model has helped us garner the following insights:
@@ -39,22 +41,29 @@ This dimensional model has helped us garner the following insights:
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/8e0c3464-02ea-41df-b758-3fc4fc8b6436)
 
 I used Ralph Kimball’s four step process in developing the dimensional model:
-Step 1: Select the business process.
+
+<ins>Step 1: Select the business process.</ins>
 We will be focussing on the Sales Process (OrderQty, LineTotal, Profit, etc.) as our objective is to analyse profitability across dimensions such as customers and products.
-Step 2: Define the Data Grain.
+
+<ins>Step 2: Define the Data Grain.</ins>
 Each data grain represents an individual customer, unique product (including its quantity per order), sales territory, salesperson involved in the transaction, and the day of transaction (day is at the atomic grain level despite OrderDate using datetime data type; time isn’t recorded as per data realities of the system). Data is at the lowest possible details for provision of analytical flexibility.
-Step 3: Identify Dimensions. 
+
+<ins>Step 3: Identify Dimensions. </ins>
 Here the dimensions are customer, product, territory, salesperson, and date. Surrogate keys were generated for each dimension to connect the dimensions and facts while preserving the natural key. This allows us to save storage space and prevent potential disruptions when records of the operational sources change over time. A Date dimension has also been included as they are fundamental for tracking changes across time periods.
+
 Hierarchies were collapsed across the dimensions. Information from the Product, ProductSubCategory, ProductCategory, ProductModel tables in the operational database were collapsed into the product dimension. The Customers, Address, StateProvince, and CountryRegion tables were collapsed into the customer dimension. The SalesPerson SalesPersonDetails, SalesTerritory, StateProvince, and CountryRegion tables were collapsed into the salesperson dimension. Adding additional attributes helps to manage the complexity while logically maintaining the hierarchical structure of the data in the same dimensional table. For example, ProductSubCategoryName and ProductCategoryName were additional attributes added to the product dimension to provide additional flexibility in the analysis.
-Step 4: Identify the Fact Measure.
+
+<ins>Step 4: Identify the Fact Measure.</ins>
 The fact table uses a composite key consisting of the keys of all the dimension tables (CustomerKey, ProductKey, TerritoryKey, SalesPersonKey, OrderDateKey). 
+
 The facts correspond to the measurements of sales events at a point in space and time. Here we include the facts LineTotal, LineTax, LineFreight, OrderQty, UnitPrice, UnitPriceDiscount, StandardCost, ListPrice, Profit_Tax_Freight, Profit_StandardCost, Profit_Tax_Freigth_StandardCost. 
+
 These are numerical and additive in nature and supports mathematical operations such as aggregation for analysis. The LineTax and LineFreight facts are the tax amounts and freight costs of the transaction distributed evenly across the line items. 
+
 Profit_Tax_Freight, Profit_StandardCost, and Profit_Tax_Freigth_StandardCost represent profits calculated in different ways. 
 •	Profit_Tax_Freight = LineTotal – LineTax – LineFreight 
 •	Profit_StandardCost = LineTotal – (StandardCost * OrderQty)
 •	Profit_Tax_Freigth_StandardCost = LineTotal – LineTax – LineFreight – (StandardCost * OrderQty)
-
 
 
 Note: To navigate the appropriate equation for calculating profit we need to conduct an initial assessment as recommended by Kimball to understand the data realities, business context, and end-user requirements. I will proceed with Profit_Tax_Freigth_StandardCost as profit for the purposes of this project and answer analytical queries.
@@ -66,14 +75,18 @@ Note: To navigate the appropriate equation for calculating profit we need to con
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/54ecf63a-95a6-4255-a3c6-b6133ba3ed6d)
 2. **Fact Table Implementation** ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/138d0641-2e25-41e0-b916-bee2b024af9d)
 3. **The Implementation Process**
-Relevant components of the data warehouse architecture: 
+Relevant components of the data warehouse architecture:
+
 Source Data Systems:
 Before we can integrate data into a dimensional model, we need to first identify the source data systems. Our main data source is the internal sales system modelled as a transactional database. We also have an internally sourced flat file that contains the names of the Aussie Bikes salespeople.
 
 Data Staging Area:
 After identifying the data sources, we then conduct Extract, Transform, Load (ETL) with SSIS. ETL facilitates creation of the dimensionally modelled data through data integration, transformation, cleaning and is vital in ensuring the quality of data and smooth functioning of the data warehouse.
+
 We extract the data in the sales system from SQL Server Management Studio using an ADO Net Source in SSIS. To extract the flat file, which is stored as a .xlsx file, the file had to be converted to a CSV file before it could be read as a flat file source in SSIS.
+
 In the transformation phase, we fix the data quality issues and prepare the data to load into the dimensional model. 
+
 •	In the flat file, the SalesPersonID attribute is converted into a 4 byte signed integer from a general string data type to match the data type of SalesPersonID in the SalesPerson table. The data types need to match to perform an SSIS merge join task. 
 •	For the dimension and fact tables, we merge data from various tables in the sales system using a merge join task.
 •	Artificially generated surrogate keys are added through SQL table creation queries in the ADO Net Destination before loading data into the dimensional tables in the data warehouse.
@@ -82,6 +95,7 @@ In the transformation phase, we fix the data quality issues and prepare the data
 Profit_Tax_Freigth_StandardCost (as defined earlier) can be calculated via an additional derived column task. 
 •	We convert OrderDate, DueDate, and ShipDate from datetime data type to date data type via type casting and the derived column SSIS task. We do this for looking up matching date keys in the DateDim dimensional table, since DateID in DateDim has date data type.
 •	For the fact table, we can obtain the surrogate keys from the constructed dimensional tables via a lookup task by matching the natural key in the fact table with the corresponding key in the dimensional table.
+
 Once the data is transformed, we can load the processed data into the data warehouse.
 
 Data and Meta-Data Storage Area:
