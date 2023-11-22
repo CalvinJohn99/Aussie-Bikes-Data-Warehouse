@@ -33,9 +33,9 @@ The dimensional model is based on the multi-dimensional model of data and is des
 The data from the operational systems is then combined and transformed (ETL) into a multi-dimensional model to extract valuable data (integrated, non-volatile, subject oriented, and time-variant data) which we then deposit in the data warehouse (informational database as per the dimensional model). The data warehouse in turn allows us to access a unified version of truth that can support decision-making.
 
 This dimensional model has helped us garner the following insights:
-•	Richard Carey is our top customer in Australia based on net profit contributions. 
-•	In 2014, the top 10 profitable products are all bikes. 60% of them are mountain bikes, 30% are touring bikes, and 10% are road bikes. 
-•	In December 2013, our most profitable sales territory was Australia.
+* Richard Carey is our top customer in Australia based on net profit contributions.
+* In 2014, the top 10 profitable products are all bikes. 60% of them are mountain bikes, 30% are touring bikes, and 10% are road bikes.
+* In December 2013, our most profitable sales territory was Australia.
 
 ### The Dimensional Model
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/8e0c3464-02ea-41df-b758-3fc4fc8b6436)
