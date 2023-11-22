@@ -136,12 +136,12 @@ ON F.CustomerKey=C1.CustomerKey
 WHERE C1.CountryRegionName='Australia'
 GROUP BY C1.CustomerKey
 )
-SELECT TOP 10 cte1.CustomerKey, C2.CustomerID, cte1.CustomerProfitAustralia, C2.FirstName
-+ ' ' + C2.LastName AS FullName, C2.City, C2.StateProvinceName AS State
-+ FROM cte1
-+ JOIN CustomerDim C2
-+ ON cte1.CustomerKey=C2.CustomerKey
-+ ORDER BY cte1.CustomerProfitAustralia DESC;
+SELECT TOP 10 cte1.CustomerKey, C2.CustomerID, cte1.CustomerProfitAustralia, C2.FirstName+
+' ' + C2.LastName AS FullName, C2.City, C2.StateProvinceName AS State
+FROM cte1
+JOIN CustomerDim C2
+ON cte1.CustomerKey=C2.CustomerKey
+ORDER BY cte1.CustomerProfitAustralia DESC;
 
 ### Most Profitable Products 2014
 
@@ -151,16 +151,19 @@ In 2014, our top 10 profitable products are all bikes! Among the top 10 bike pro
 
 **SQL:**
 
-WITH cte1 AS (SELECT P.ProductKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS ProductProfit2014
-	FROM SalesOrderFact F
-	JOIN ProductDim P
-	ON F.ProductKey=P.ProductKey
-	JOIN DateDim D
-	ON F.OrderDateKey=D.DateKey
-	WHERE D.Year=2014
-	GROUP BY P.ProductKey
+WITH cte1 AS (SELECT P.ProductKey, CAST(ROUND(SUM(F.Profit_Tax_Freigth_StandardCost),1) AS
+FLOAT) AS ProductProfit2014
+FROM SalesOrderFact F
+JOIN ProductDim P
+ON F.ProductKey=P.ProductKey
+JOIN DateDim D
+ON F.OrderDateKey=D.DateKey
+WHERE D.Year=2014
+GROUP BY P.ProductKey
 )
-SELECT TOP 10 cte1.ProductKey, cte1.ProductProfit2014, P.ProductName, P.ProductCategoryName AS Category, P.ProductSubCategoryName AS SubCategory, P.ProductModelName AS Model
+SELECT TOP 10 cte1.ProductKey, cte1.ProductProfit2014, P.ProductName,
+P.ProductCategoryName AS Category, P.ProductSubCategoryName AS SubCategory,
+P.ProductModelName AS Model
 FROM cte1 
 JOIN ProductDim P
 ON cte1.ProductKey=P.ProductKey
@@ -174,14 +177,16 @@ In December 2013, our most profitable sales territory is Australia in the pacifi
 
 **SQL:**
 
-WITH cte1 AS (SELECT T1.TerritoryKey, CAST(ROUND(SUM(Profit_Tax_Freigth_StandardCost),1) AS FLOAT) AS TerritoryProfitDec2013, SUM(F.OrderQty) AS UnitSales, CAST(ROUND(SUM(F.LineTotal),1) AS FLOAT) AS DollarSales
-	FROM SalesOrderFact F
-	JOIN SalesTerritoryDim T1
-	ON F.TerritoryKey=T1.TerritoryKey
-	JOIN DateDim D
-	ON F.OrderDateKey=D.DateKey
-	WHERE D.Year=2013 AND D.Month=12
-	GROUP BY T1.TerritoryKey
+WITH cte1 AS (SELECT T1.TerritoryKey, CAST(ROUND(SUM(Profit_Tax_Freigth_StandardCost),1)
+AS FLOAT) AS TerritoryProfitDec2013, SUM(F.OrderQty) AS UnitSales,
+CAST(ROUND(SUM(F.LineTotal),1) AS FLOAT) AS DollarSale
+FROM SalesOrderFact F
+JOIN SalesTerritoryDim T1
+ON F.TerritoryKey=T1.TerritoryKey
+JOIN DateDim D
+ON F.OrderDateKey=D.DateKey
+WHERE D.Year=2013 AND D.Month=12
+GROUP BY T1.TerritoryKey
 )
 SELECT TOP 5 cte1.*, T2.TerritoryName, T2.TerritoryGroup
 FROM cte1
