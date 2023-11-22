@@ -6,13 +6,17 @@ I have attached the data sources, the backup file of the created data warehouse,
 ## AUSSIE BIKES CASE SCENARIO
 
 Aussie Bikes (OZZB) specialises in manufacturing and selling three models of bicycles: (1) mountain bikes, (2) road bikes, and (3) touring bikes. Even though OZZB's primary business is focused on bicycle sales, it also sells accessories for bikers, such as bottles, bike racks, and brakes. In recent years, OZZB has extended to sports apparel, such as caps, gloves, and jerseys. Additionally, some portion of business includes sales of components like chains and derailleurs. While OZZB mainly manufactures bicycles, it purchases the apparel and the components from the other vendors. OZZB is not only in the business of manufacturing but also in the business of reselling. 
+
 OZZB does not own any traditional brick-and-mortar stores for retailing, but instead, it sells items in bulk to retail stores as a wholesaler. However, OZZB uses an internet platform for the retail sales to the individual customers. The OZZB business model divides customers into retail stores that sell bikes and individual customers. Overall, OZZB's customer base includes over 635 stores, over 18,484 personal customers, and a sales force of 17 salespeople who sell the products to customers. On the supply side, OZZB utilises services from over 100 vendor companies serving as suppliers of components, accessories, clothing, and raw materials. In recent years, OZZB has been a profitable and very successful business venture with a global customer base across the United States, Canada, Australia, the United Kingdom, France, and Germany. The company is eying an expansion of business operations but lacks a clear understanding of its market. 
+
 Amy is a newly hired manager and is tasked with the responsibility of building a better understanding of their current business before making the expansion decisions. In a recent business conference, Amy heard from vendors that business analytics can provide the business with the capability to make more informed decisions. She also discovered that the OZZB lacks the capabilities to make data-driven decisions as the board members rely on transactional databases to fetch the data. Amy identified the need for a data warehouse as a first step required for the expansion of business operations. 
+
 In a recent meeting, the board approved hiring a business analyst consultant to provide analytic insights regarding the profitability of various products. You have been hired as a business analyst consultant to propose a business analytics solution to the management team. Your job is to present a prototype of a data warehouse and make a business case by identifying the key customers, profitable products, and sales territory in the last two years.
+
 Amy has specifically requested, a) Data Model for the Data Warehouse, b) Description of data integration process (ETL), c) Sample Analytical queries.
-QC1. Who are the key customers in Australia?
-QC2. Which products were the most profitable in 2014?
-QC3. Which sales territories are the most profitable during December 2013? 
+1. Who are the key customers in Australia?
+2. Which products were the most profitable in 2014?
+3. Which sales territories are the most profitable during December 2013? 
 
 ### Sales System ER Model
 ![image](https://github.com/CalvinJohn99/Aussie-Bikes-Data-Warehouse/assets/40469219/99ca70ca-7e34-468e-8436-199407d8018d)
